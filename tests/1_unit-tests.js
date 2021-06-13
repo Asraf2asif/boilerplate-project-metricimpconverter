@@ -3,6 +3,14 @@ let assert = chai.assert;
 const ConvertHandler = require('../controllers/convertHandler.js');
 
 let convertHandler = new ConvertHandler();
+const units = [
+  {"unit": "gal", "oposite": "L", "spell": "gallons"},
+  {"unit": "lbs", "oposite": "kg", "spell": "pounds"},
+  {"unit": "mi", "oposite": "km", "spell": "miles"}, 
+  {"unit": "L", "oposite": "gal", "spell": "liters"}, 
+  {"unit": "kg", "oposite": "lbs", "spell": "kilograms"}, 
+  {"unit": "km", "oposite": "mi", "spell": "kilometers"}
+]
 
 suite('Unit Tests', function(){
   test('#whole number', function () {
@@ -53,37 +61,13 @@ suite('Unit Tests', function(){
      1, 
      'should correctly default to a numerical input of 1 when no numerical input is provided.');
   });
-
+  
   test('#unit', function () {
-    //"gal lbs mi L kg km"
-
-    assert.equal(convertHandler.getUnit("12gal"),
-     "gal", 
-     'should correctly read input unit gal.');
-
-    assert.equal(convertHandler.getUnit("12lbs"),
-     "lbs", 
-     'should correctly read input unit lbs.');
-
-    assert.equal(convertHandler.getUnit("12mi"),
-     "mi", 
-     'should correctly read input unit mi.');
-
-    assert.equal(convertHandler.getUnit("12L"),
-     "L", 
-     'should correctly read input unit L.');
-
-     assert.equal(convertHandler.getUnit("12l"),
-     "l", 
-     'should correctly read input unit L.');
-
-    assert.equal(convertHandler.getUnit("12kg"),
-     "kg", 
-     'should correctly read input unit kg.');
-
-    assert.equal(convertHandler.getUnit("12km"),
-     "km", 
-     'should correctly read input unit km.');
+    units.forEach(({unit}) => {
+      assert.equal(convertHandler.getUnit("12" + unit),
+        unit,
+        "should correctly read input unit: " + unit)
+      });
   });
 
   test('#invalid unit', function () {
@@ -93,61 +77,19 @@ suite('Unit Tests', function(){
   });
 
   test('#return unit', function () {
-    //"gal lbs mi L   kg  km"
-    //"L   kg  km gal lbs mi"
-    
-    assert.equal(convertHandler.getReturnUnit("gal"),
-     "L", 
-     'should return unit "L" return for input gal.');
-
-     assert.equal(convertHandler.getReturnUnit("lbs"),
-     "kg", 
-     'should return unit "kg" return for input lbs.');
-
-     assert.equal(convertHandler.getReturnUnit("mi"),
-     "km", 
-     'should return unit "km" return for input mi.');
-
-     assert.equal(convertHandler.getReturnUnit("L"),
-     "gal", 
-     'should return unit "gal" return for input L.');
-
-     assert.equal(convertHandler.getReturnUnit("kg"),
-     "lbs", 
-     'should return unit "lbs" return for input kg.');
-
-     assert.equal(convertHandler.getReturnUnit("km"),
-     "mi", 
-     'should return unit "mi" return for input km.');
+    units.forEach(({unit, oposite}) => {
+      assert.equal(convertHandler.getReturnUnit(unit),
+        oposite,
+        'should return oposite unit: ' + oposite + 'for input: ' + unit)
+      });
   });
 
   test('#spelled-out unit', function () {
-    //"gal     lbs    mi    L      kg        km"
-    //"gallons pounds miles liters kilograms kilometers"
-
-    assert.equal(convertHandler.spellOutUnit("gal"),
-     "gallons", 
-     'should correctly spell gallons for input gal.');
-
-     assert.equal(convertHandler.spellOutUnit("lbs"),
-     "pounds", 
-     'should correctly spell pounds for input lbs.');
-
-     assert.equal(convertHandler.spellOutUnit("mi"),
-     "miles", 
-     'should correctly spell miles for input mi.');
-
-     assert.equal(convertHandler.spellOutUnit("L"),
-     "liters", 
-     'should correctly spell liters for input L.');
-
-     assert.equal(convertHandler.spellOutUnit("kg"),
-     "kilograms", 
-     'should correctly spell kilograms for input kg.');
-
-     assert.equal(convertHandler.spellOutUnit("km"),
-     "kilometers", 
-     'should correctly spell kilometers for input km.');
+    units.forEach(({unit, spell}) => {
+      assert.equal(convertHandler.spellOutUnit(unit),
+        spell,
+        'should return spell: ' + spell + 'for input: ' + unit)
+      });
   });
 
   test('#gal to L', function () {
