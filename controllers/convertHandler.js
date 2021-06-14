@@ -1,54 +1,34 @@
 function ConvertHandler() {
   const units = require('../units.json');
-  
-  // Utility method to get number or input
-  this.getnOU = function(input) {
-
-    const regx = {
-      "num": /^\d+(\.\d+)?(\/\d+(\.\d+)?)?/g,
-      "unit": new RegExp(
+  const unitRegex = new RegExp(
         `(${units.map(
             ({unit}) => unit
           ).join("|")})$`, 'gi')
-    }
-    
-    const result = {
-      "num":0,
-      "unit":""
-    }
-
-    // getUnit
-    regx["unit"].test(input) ?
-       result.unit = input.match(regx["unit"])[0]
-      :result.unit = 'invalid unit'
-
-    // getNum
-    const otherInput = input.replace(regx["unit"],"")
-    if(otherInput === ""){
-      result.num = 1
-    }else if(regx["num"].test(otherInput)){
-      const multipleFSlashDot = /\/\/+/.test(otherInput) || /\.\.+/.test(otherInput)
-      const invalidNumInEnd = /^[\d\/]+$/.test(otherInput.replace(regx["num"],""))
-      const calculateNum = num => /[/]/.test(num) ? eval(num) : Number(num)
-
-       multipleFSlashDot || invalidNumInEnd ?
-         result.num = 'invalid number'
-        :result.num = calculateNum(otherInput.match(regx["num"])[0])
-    }else{
-      result.num = 'invalid number'
-    }
-
-    return result;
-  };
-
+  
   // method to get number
   this.getNum = function(input) {
-    return this.getnOU(input).num;
+    const numRegex = /^\d+(\.\d+)?(\/\d+(\.\d+)?)?/g
+    const otherInput = input.replace(unitRegex,"")
+
+    if(otherInput === ""){
+      return 1
+    }else if(numRegex.test(otherInput)){
+      const multipleFSlashDot = /\/\/+/.test(otherInput) || /\.\.+/.test(otherInput)
+      const invalidNumInEnd = /^[\d\/]+$/.test(otherInput.replace(numRegex,""))
+      const calculateNum = num => /[/]/.test(num) ? eval(num) : Number(num)
+      
+      if(!multipleFSlashDot && !invalidNumInEnd){
+        return calculateNum(otherInput.match(numRegex)[0])
+      }
+    }
+    return 'invalid number'
   };
 
   // method to get input
   this.getUnit = function(input) {
-    return this.getnOU(input).unit
+    return unitRegex.test(input) ?
+            input.match(unitRegex)[0] :
+            'invalid unit'
   };
 
   // method to get return unit
