@@ -1,0 +1,38 @@
+[
+  {
+    "unit": "gal",
+    "oposite": "L",
+    "spell": "gallons",
+    "ratio": 3.78541
+  },
+  {
+    "unit": "lbs",
+    "oposite": "kg",
+    "spell": "pounds",
+    "ratio": 0.453592
+  },
+  {
+    "unit": "mi",
+    "oposite": "km",
+    "spell": "miles",
+    "ratio": 1.60934
+  },
+  {
+    "unit": "L",
+    "oposite": "gal",
+    "spell": "liters",
+    "ratio": 0.2641721
+  },
+  {
+    "unit": "kg",
+    "oposite": "lbs",
+    "spell": "kilograms",
+    "ratio": 2.20462442
+  },
+  {
+    "unit": "km",
+    "oposite": "mi",
+    "spell": "kilometers",
+    "ratio": 0.621372736
+  }
+]

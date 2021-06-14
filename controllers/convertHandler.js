@@ -1,66 +1,39 @@
 function ConvertHandler() {
-  const unitInfo = {
-    "gal": {
-      "opposite": "L",
-      "spell": "gallons",
-      "ratio": 3.78541
-    },
-    "lbs": {
-      "opposite": "kg",
-      "spell": "pounds",
-      "ratio": 0.453592
-    },
-    "mi": {
-      "opposite": "km",
-      "spell": "miles",
-      "ratio": 1.60934
-    },
-    "L": {
-      "opposite": "gal",
-      "spell": "liters",
-      "ratio": 1 / 3.78541
-    },
-    "kg": {
-      "opposite": "lbs",
-      "spell": "kilograms",
-      "ratio": 1 / 0.453592
-    },
-    "km": {
-      "opposite": "mi",
-      "spell": "kilometers",
-      "ratio": 1 / 1.60934
-    }
-  }
-
+  const units = require('../units.json');
+  
   // Utility method to get number or input
   this.getnOU = function(input) {
+
     const regx = {
       "num": /^\d+(\.\d+)?(\/\d+(\.\d+)?)?/g,
-      "unit": /(gal|lbs|mi|L|kg|km)$/gi
+      "unit": new RegExp(
+        `(${units.map(
+            ({unit}) => unit
+          ).join("|")})$`, 'gi')
     }
-
+    
     const result = {
       "num":0,
       "unit":""
     }
 
-    if(regx["unit"].test(input)){
-      result.unit = input.match(regx["unit"])[0]
-    }else{
-      result.unit = 'invalid unit'
-    }
+    // getUnit
+    regx["unit"].test(input) ?
+       result.unit = input.match(regx["unit"])[0]
+      :result.unit = 'invalid unit'
 
+    // getNum
     const otherInput = input.replace(regx["unit"],"")
     if(otherInput === ""){
       result.num = 1
     }else if(regx["num"].test(otherInput)){
-      // test for multiple "/" and "." and invalid num in end
+      const multipleFSlashDot = /\/\/+/.test(otherInput) || /\.\.+/.test(otherInput)
       const invalidNumInEnd = /^[\d\/]+$/.test(otherInput.replace(regx["num"],""))
-      if(/\/\/+/.test(otherInput)||/\.\.+/.test(otherInput) || invalidNumInEnd){
-        result.num = 'invalid number'
-      }else{
-        result.num = otherInput.match(regx["num"])[0]
-      }
+      const calculateNum = num => /[/]/.test(num) ? eval(num) : Number(num)
+
+       multipleFSlashDot || invalidNumInEnd ?
+         result.num = 'invalid number'
+        :result.num = calculateNum(otherInput.match(regx["num"])[0])
     }else{
       result.num = 'invalid number'
     }
@@ -70,15 +43,7 @@ function ConvertHandler() {
 
   // method to get number
   this.getNum = function(input) {
-    let num = this.getnOU(input).num
- 
-    if(/[/]/.test(num)){
-      num = eval(num)
-    }
-    if(/\d+/.test(num)){
-      num = Number(num)
-    }
-    return num;
+    return this.getnOU(input).num;
   };
 
   // method to get input
@@ -88,17 +53,18 @@ function ConvertHandler() {
 
   // method to get return unit
   this.getReturnUnit = function(initUnit) {
-    return unitInfo[initUnit].opposite;
+    return units.find(({unit}) => unit === initUnit).oposite;
   };
 
   // method to get unit spell
-  this.spellOutUnit = function(unit) {
-    return unitInfo[unit].spell;
+  this.spellOutUnit = function(unitName) {
+    return units.find(({unit}) => unit === unitName).spell;
   };
 
   // method to convert unit
   this.convert = function(initNum, initUnit) {
-    const result = initNum * unitInfo[initUnit].ratio;
+    const ratio = units.find(({unit}) => unit === initUnit).ratio;
+    const result = initNum * ratio;
     return Number(result.toFixed(5));
   };
 

@@ -3,14 +3,7 @@ let assert = chai.assert;
 const ConvertHandler = require('../controllers/convertHandler.js');
 
 let convertHandler = new ConvertHandler();
-const units = [
-  {"unit": "gal", "oposite": "L", "spell": "gallons"},
-  {"unit": "lbs", "oposite": "kg", "spell": "pounds"},
-  {"unit": "mi", "oposite": "km", "spell": "miles"}, 
-  {"unit": "L", "oposite": "gal", "spell": "liters"}, 
-  {"unit": "kg", "oposite": "lbs", "spell": "kilograms"}, 
-  {"unit": "km", "oposite": "mi", "spell": "kilometers"}
-]
+const units = require('../units.json');
 
 suite('Unit Tests', function(){
   test('#whole number', function () {
