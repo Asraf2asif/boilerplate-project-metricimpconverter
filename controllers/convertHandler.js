@@ -7,18 +7,17 @@ function ConvertHandler() {
   
   // method to get number
   this.getNum = function(input) {
-    const numRegex = /^\d+(\.\d+)?(\/\d+(\.\d+)?)?/g
-    const otherInput = input.replace(unitRegex,"")
+    const numRegex = /^\d+(\.(?!\.+)\d+)?(\/(?!\/+)(\d+(\.(?!\.+)\d+)?))?/g
+    const withOutUnit = input.replace(unitRegex,"")
 
-    if(otherInput === ""){
+    if(withOutUnit === ""){
       return 1
-    }else if(numRegex.test(otherInput)){
-      const multipleFSlashDot = /\/\/+/.test(otherInput) || /\.\.+/.test(otherInput)
-      const invalidNumInEnd = /^[\d\/]+$/.test(otherInput.replace(numRegex,""))
+    }else if(numRegex.test(withOutUnit)){
+      const invalidNumInEnd = /^[\d\/\.]+$/.test(withOutUnit.replace(numRegex,""))
       const calculateNum = num => /[/]/.test(num) ? eval(num) : Number(num)
       
-      if(!multipleFSlashDot && !invalidNumInEnd){
-        return calculateNum(otherInput.match(numRegex)[0])
+      if(!invalidNumInEnd){
+        return calculateNum(withOutUnit.match(numRegex)[0])
       }
     }
     return 'invalid number'
