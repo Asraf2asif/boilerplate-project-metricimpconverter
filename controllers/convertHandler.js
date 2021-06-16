@@ -14,9 +14,10 @@ function ConvertHandler() {
       return 1
     }else if(numRegex.test(withOutUnit)){
       const invalidNumInEnd = /^[\d\/\.]+$/.test(withOutUnit.replace(numRegex,""))
+      const multipleFSlashDot = /\/\/+/.test(withOutUnit) || /\.\.+/.test(withOutUnit)
       const calculateNum = num => /[/]/.test(num) ? eval(num) : Number(num)
       
-      if(!invalidNumInEnd){
+      if(!multipleFSlashDot && !invalidNumInEnd){
         return calculateNum(withOutUnit.match(numRegex)[0])
       }
     }
